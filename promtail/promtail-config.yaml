@@ -1,0 +1,67 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+  log_level: info
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+    # No authentication needed - internal network
+
+scrape_configs:
+  # Scrape Docker container logs from central server
+  - job_name: docker-central
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+    relabel_configs:
+      # Set container name as label
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/(.*)'
+        target_label: 'container'
+      # Set container id
+      - source_labels: ['__meta_docker_container_id']
+        target_label: 'container_id'
+      # Set image name
+      - source_labels: ['__meta_docker_container_image']
+        target_label: 'image'
+      # Set host label
+      - replacement: 'central-server'
+        target_label: 'host'
+      # Set job label
+      - replacement: 'docker'
+        target_label: 'job'
+
+  # Optional: Scrape system logs
+  - job_name: system-central
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: syslog
+          host: central-server
+          __path__: /var/log/*.log
+
+# Pipeline stages for log processing
+pipeline_stages:
+  # Parse JSON logs
+  - json:
+      expressions:
+        level: level
+        msg: msg
+        timestamp: timestamp
+
+  # Extract log level
+  - labels:
+      level:
+
+  # Drop healthcheck and noisy logs (optional)
+  # - match:
+  #     selector: '{job="docker"}'
+  #     stages:
+  #       - drop:
+  #           expression: ".*healthcheck.*"
+  #       - drop:
+  #           expression: ".*liveness.*"

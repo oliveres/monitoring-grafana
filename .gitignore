@@ -1,0 +1,19 @@
+# Environment files
+.env
+
+# Caddy data (SSL certificates)
+caddy/data/
+caddy/config/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,107 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: monitoring-caddy
+    restart: unless-stopped
+    networks:
+      - monitoring
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN:-monitoring.localhost}
+      - BASIC_AUTH_USER=${BASIC_AUTH_USER:-remote}
+      - BASIC_AUTH_PASSWORD_HASH=${BASIC_AUTH_PASSWORD_HASH}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - grafana
+      - prometheus
+      - loki
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: monitoring-grafana
+    restart: unless-stopped
+    user: "472"
+    networks:
+      - monitoring
+    expose:
+      - 3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=https://${DOMAIN:-monitoring.localhost}
+      - GF_INSTALL_PLUGINS=
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+      - loki
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: monitoring-prometheus
+    restart: unless-stopped
+    user: "nobody"
+    networks:
+      - monitoring
+    expose:
+      - 9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION:-2y}'
+      - '--web.listen-address=0.0.0.0:9090'
+      - '--web.enable-remote-write-receiver'
+      - '--web.enable-lifecycle'
+    volumes:
+      - prometheus-data:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  loki:
+    image: grafana/loki:latest
+    container_name: monitoring-loki
+    restart: unless-stopped
+    networks:
+      - monitoring
+    expose:
+      - 3100
+    command: -config.file=/etc/loki/loki-config.yaml
+    volumes:
+      - loki-data:/loki
+      - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
+
+  # Optional: Promtail for collecting logs from central server itself
+  promtail:
+    image: grafana/promtail:latest
+    container_name: monitoring-promtail
+    restart: unless-stopped
+    user: "0:0"
+    networks:
+      - monitoring
+    command: -config.file=/etc/promtail/promtail-config.yaml
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/log:/var/log:ro
+      - promtail-data:/tmp
+      - ./promtail/promtail-config.yaml:/etc/promtail/promtail-config.yaml:ro
+    depends_on:
+      - loki
+
+volumes:
+  grafana-data:
+  prometheus-data:
+  loki-data:
+  promtail-data:
+  caddy-data:
+  caddy-config:
+
+networks:
+  monitoring:
+    driver: bridge
