@@ -33,6 +33,17 @@ scrape_configs:
       # Set job label
       - replacement: 'docker'
         target_label: 'job'
+    # Pipeline stages for Docker logs
+    pipeline_stages:
+      # Parse JSON logs
+      - json:
+          expressions:
+            level: level
+            msg: msg
+            timestamp: timestamp
+      # Extract log level as label
+      - labels:
+          level:
 
   # Optional: Scrape system logs
   - job_name: system-central
@@ -43,25 +54,3 @@ scrape_configs:
           job: syslog
           host: central-server
           __path__: /var/log/*.log
-
-# Pipeline stages for log processing
-pipeline_stages:
-  # Parse JSON logs
-  - json:
-      expressions:
-        level: level
-        msg: msg
-        timestamp: timestamp
-
-  # Extract log level
-  - labels:
-      level:
-
-  # Drop healthcheck and noisy logs (optional)
-  # - match:
-  #     selector: '{job="docker"}'
-  #     stages:
-  #       - drop:
-  #           expression: ".*healthcheck.*"
-  #       - drop:
-  #           expression: ".*liveness.*"
