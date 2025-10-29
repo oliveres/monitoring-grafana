@@ -22,7 +22,9 @@ services:
       - loki
 
   grafana:
-    image: grafana/grafana:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile
     container_name: monitoring-grafana
     restart: unless-stopped
     user: "472"
@@ -38,7 +40,6 @@ services:
       - GF_INSTALL_PLUGINS=
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning:ro
     depends_on:
       - prometheus
       - loki
