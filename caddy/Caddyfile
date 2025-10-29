@@ -1,5 +1,7 @@
 {
     # Global options
+    admin 0.0.0.0:2019
+    metrics
     email admin@{$DOMAIN}
     # Uncomment for staging during testing to avoid rate limits:
     # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
