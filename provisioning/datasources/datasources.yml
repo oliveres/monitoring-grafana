@@ -18,7 +18,7 @@ datasources:
   # Loki datasource
   - name: Loki
     type: loki
-    uid: loki
+    uid: loki-datasource
     access: proxy
     url: http://loki:3100
     editable: false
