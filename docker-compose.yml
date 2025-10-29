@@ -51,8 +51,8 @@ services:
     user: "nobody"
     networks:
       - monitoring
-    expose:
-      - 9090
+    ports:
+      - "9090:9090"  # Open for VPC remote_write from edge servers
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
