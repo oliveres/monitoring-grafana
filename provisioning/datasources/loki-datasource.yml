@@ -33,12 +33,6 @@ datasources:
   # <map> fields that will be converted to json and stored in json_data
   jsonData:
     maxLines: 1000
-    derivedFields:
-      - datasourceName: Prometheus
-        matcherRegex: "container=\"([^\"]+)\""
-        name: Container metrics
-        datasourceUid: t4f0shgRk
-        url: '/explore?orgId=1&left=["now-1h","now","Prometheus",{"expr":"container_name=\"$${__value.raw}\""}]'
   # <string> json object of data that will be encrypted.
   secureJsonData: {}
   version: 1
