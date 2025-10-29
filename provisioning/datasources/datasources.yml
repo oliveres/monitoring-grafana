@@ -4,7 +4,6 @@ datasources:
   # Prometheus datasource
   - name: Prometheus
     type: prometheus
-    uid: t4f0shgRk
     access: proxy
     url: http://prometheus:9090
     isDefault: true
@@ -18,7 +17,6 @@ datasources:
   # Loki datasource
   - name: Loki
     type: loki
-    uid: loki-datasource
     access: proxy
     url: http://loki:3100
     editable: false
