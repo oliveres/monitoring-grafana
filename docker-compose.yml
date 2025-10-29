@@ -70,8 +70,8 @@ services:
     restart: unless-stopped
     networks:
       - monitoring
-    expose:
-      - 3100
+    ports:
+      - "3100:3100"  # Open for VPC push from edge Promtail
     command: -config.file=/etc/loki/loki-config.yaml
     volumes:
       - loki-data:/loki
