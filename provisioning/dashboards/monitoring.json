@@ -115,7 +115,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "(sum by(instance) (irate(node_cpu_seconds_total{mode!=\"idle\"}[$__rate_interval])) / on(instance) group_left sum by (instance)((irate(node_cpu_seconds_total[$__rate_interval])))) * 100",
+          "expr": "(sum by(host) (irate(node_cpu_seconds_total{mode!=\"idle\",host=\"$host\"}[$__rate_interval])) / on(host) group_left sum by (host)((irate(node_cpu_seconds_total{host=\"$host\"}[$__rate_interval])))) * 100",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -205,7 +205,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "avg(node_load5) /  count(count(node_cpu_seconds_total) by (cpu)) * 100",
+          "expr": "avg(node_load5{host=\"$host\"}) /  count(count(node_cpu_seconds_total{host=\"$host\"}) by (cpu)) * 100",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -287,7 +287,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "((container_memory_MemTotal_bytes - container_memory_MemFree_bytes) / (container_memory_MemTotal_bytes )) * 100",
+          "expr": "((container_memory_MemTotal_bytes{host=\"$host\"} - container_memory_MemFree_bytes{host=\"$host\"}) / (container_memory_MemTotal_bytes{host=\"$host\"} )) * 100",
           "format": "time_series",
           "hide": true,
           "interval": "",
@@ -304,7 +304,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "100 - ((node_memory_MemAvailable_bytes * 100) / node_memory_MemTotal_bytes)",
+          "expr": "100 - ((node_memory_MemAvailable_bytes{host=\"$host\"} * 100) / node_memory_MemTotal_bytes{host=\"$host\"})",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -392,7 +392,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "((node_memory_SwapTotal_bytes - node_memory_SwapFree_bytes) / (node_memory_SwapTotal_bytes)) * 100",
+          "expr": "((node_memory_SwapTotal_bytes{host=\"$host\"} - node_memory_SwapFree_bytes{host=\"$host\"}) / (node_memory_SwapTotal_bytes{host=\"$host\"})) * 100",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "",
@@ -479,7 +479,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\",fstype!=\"rootfs\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\",fstype!=\"rootfs\"})",
+          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\",fstype!=\"rootfs\",host=\"$host\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\",fstype!=\"rootfs\",host=\"$host\"})",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -565,7 +565,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "count(count(node_cpu_seconds_total) by (cpu))",
+          "expr": "count(count(node_cpu_seconds_total{host=\"$host\"}) by (cpu))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -646,7 +646,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "count(container_last_seen{image=~ \"(.)+\"})",
+          "expr": "count(container_last_seen{image=~ \"(.)+\",host=\"$host\"})",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -728,7 +728,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "node_time_seconds - node_boot_time_seconds",
+          "expr": "node_time_seconds{host=\"$host\"} - node_boot_time_seconds{host=\"$host\"}",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -814,7 +814,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "node_filesystem_size_bytes{mountpoint=\"/\",fstype!=\"rootfs\"}",
+          "expr": "node_filesystem_size_bytes{mountpoint=\"/\",fstype!=\"rootfs\",host=\"$host\"}",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -896,7 +896,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes",
+          "expr": "node_memory_MemTotal_bytes{host=\"$host\"}",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -978,7 +978,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "node_memory_SwapTotal_bytes",
+          "expr": "node_memory_SwapTotal_bytes{host=\"$host\"}",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1107,7 +1107,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[$__rate_interval])) * 100)",
+          "expr": "100 - (avg by (host) (rate(node_cpu_seconds_total{mode=\"idle\",host=\"$host\"}[$__rate_interval])) * 100)",
           "format": "time_series",
           "hide": true,
           "interval": "",
@@ -1122,7 +1122,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "(sum by(instance) (irate(node_cpu_seconds_total{mode!=\"idle\"}[$__rate_interval])) / on(instance) group_left sum by (instance)((irate(node_cpu_seconds_total[$__rate_interval])))) * 100",
+          "expr": "(sum by(host) (irate(node_cpu_seconds_total{mode!=\"idle\",host=\"$host\"}[$__rate_interval])) / on(host) group_left sum by (host)((irate(node_cpu_seconds_total{host=\"$host\"}[$__rate_interval])))) * 100",
           "hide": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1250,7 +1250,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
+          "expr": "node_memory_MemTotal_bytes{host=\"$host\"} - node_memory_MemAvailable_bytes{host=\"$host\"}",
           "interval": "",
           "legendFormat": "RAM",
           "range": true,
@@ -1347,7 +1347,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "100 - ((node_filesystem_avail_bytes{fstype!=\"rootfs\",mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{fstype!=\"rootfs\",mountpoint=\"/\"})",
+          "expr": "100 - ((node_filesystem_avail_bytes{fstype!=\"rootfs\",mountpoint=\"/\",host=\"$host\"} * 100) / node_filesystem_size_bytes{fstype!=\"rootfs\",mountpoint=\"/\",host=\"$host\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "HDD",
@@ -1772,7 +1772,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "irate(node_disk_read_bytes_total[$__rate_interval])",
+          "expr": "irate(node_disk_read_bytes_total{host=\"$host\"}[$__rate_interval])",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1788,7 +1788,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "- irate(node_disk_written_bytes_total[$__rate_interval])",
+          "expr": "- irate(node_disk_written_bytes_total{host=\"$host\"}[$__rate_interval])",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1804,7 +1804,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "irate(node_disk_io_time_seconds_total[$__rate_interval])",
+          "expr": "irate(node_disk_io_time_seconds_total{host=\"$host\"}[$__rate_interval])",
           "hide": true,
           "interval": "",
           "legendFormat": "{{device}} - io time",
@@ -1918,7 +1918,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(rate(container_network_receive_bytes_total{id=\"/\"}[$__rate_interval])) by (id)",
+          "expr": "sum(rate(container_network_receive_bytes_total{id=\"/\",host=\"$host\"}[$__rate_interval])) by (id)",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -1935,7 +1935,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "- sum(rate(container_network_transmit_bytes_total{id=\"/\"}[$__rate_interval])) by (id)",
+          "expr": "- sum(rate(container_network_transmit_bytes_total{id=\"/\",host=\"$host\"}[$__rate_interval])) by (id)",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -2055,7 +2055,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[$__rate_interval])) by (name) *100",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\",host=\"$host\"}[$__rate_interval])) by (name) *100",
           "hide": false,
           "interval": "",
           "legendFormat": "{{name}}",
@@ -2157,7 +2157,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "container_memory_usage_bytes{name!=\"\"}",
+          "expr": "container_memory_usage_bytes{name!=\"\",host=\"$host\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -2173,7 +2173,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "container_spec_memory_limit_bytes{name!=\"\"}",
+          "expr": "container_spec_memory_limit_bytes{name!=\"\",host=\"$host\"}",
           "format": "time_series",
           "hide": true,
           "interval": "",
@@ -2276,7 +2276,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "sum(container_memory_rss{name!=\"\"}) by (name)",
+          "expr": "sum(container_memory_rss{name!=\"\",host=\"$host\"}) by (name)",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -2292,7 +2292,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "container_memory_usage_bytes{name=~\".+\"}",
+          "expr": "container_memory_usage_bytes{name=~\".+\",host=\"$host\"}",
           "format": "time_series",
           "hide": true,
           "intervalFactor": 2,
@@ -2398,7 +2398,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "sum(rate(container_network_receive_bytes_total{name=~\".+\"}[$__rate_interval])) by (name)",
+          "expr": "sum(rate(container_network_receive_bytes_total{name=~\".+\",host=\"$host\"}[$__rate_interval])) by (name)",
           "hide": false,
           "interval": "",
           "legendFormat": "{{name}}",
@@ -2502,7 +2502,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "sum(rate(container_network_transmit_bytes_total{name=~\".+\"}[$__rate_interval])) by (name)",
+          "expr": "sum(rate(container_network_transmit_bytes_total{name=~\".+\",host=\"$host\"}[$__rate_interval])) by (name)",
           "interval": "",
           "legendFormat": "{{name}}",
           "range": true,
@@ -2603,7 +2603,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum without (dc,from,id,csv) (irate(container_fs_writes_bytes_total{image!=\"\",device!~\"/dev/dm.*\"}[$__rate_interval]))",
+          "expr": "sum without (dc,from,id,csv) (irate(container_fs_writes_bytes_total{image!=\"\",device!~\"/dev/dm.*\",host=\"$host\"}[$__rate_interval]))",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{name}}",
@@ -2705,7 +2705,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum without (dc,from,id,csv) (irate(container_fs_reads_bytes_total{image!=\"\",device!~\"/dev/dm.*\"}[$__rate_interval]))",
+          "expr": "sum without (dc,from,id,csv) (irate(container_fs_reads_bytes_total{image!=\"\",device!~\"/dev/dm.*\",host=\"$host\"}[$__rate_interval]))",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{name}}",
@@ -2813,7 +2813,7 @@
             "uid": "t4f0shgRk"
           },
           "editorMode": "code",
-          "expr": "(time() - container_start_time_seconds{name=~\".+\"})/86400",
+          "expr": "(time() - container_start_time_seconds{name=~\".+\",host=\"$host\"})/86400",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -2864,7 +2864,28 @@
   "schemaVersion": 42,
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "name": "host",
+        "label": "Host",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "t4f0shgRk"
+        },
+        "definition": "label_values(node_cpu_seconds_total, host)",
+        "query": "label_values(node_cpu_seconds_total, host)",
+        "refresh": 1,
+        "sort": 1,
+        "options": [],
+        "current": null,
+        "includeAll": false,
+        "multi": false,
+        "regex": "",
+        "skipUrlSync": false,
+        "hide": 0
+      }
+    ]
   },
   "time": {
     "from": "now-1h",
@@ -2874,5 +2895,5 @@
   "timezone": "browser",
   "title": "Server & Docker Monitoring",
   "uid": "VKtkKcAVz",
-  "version": 2
+  "version": 3
 }
