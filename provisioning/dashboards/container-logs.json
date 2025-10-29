@@ -25,7 +25,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "loki-datasource"
+        "uid": "loki"
       },
       "fieldConfig": {
         "defaults": {
@@ -100,7 +100,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "loki-datasource"
+            "uid": "loki"
           },
           "expr": "sum by(container) (rate({job=\"docker\"}[$__interval]))",
           "refId": "A"
@@ -112,7 +112,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "loki-datasource"
+        "uid": "loki"
       },
       "fieldConfig": {
         "defaults": {
@@ -206,7 +206,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "loki-datasource"
+            "uid": "loki"
           },
           "expr": "{job=\"docker\"}",
           "refId": "A"
