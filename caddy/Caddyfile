@@ -24,10 +24,9 @@
 
     # Loki push endpoint (with Basic Auth)
     handle /loki/* {
-        basicauth {
+        basic_auth {
             {$BASIC_AUTH_USER} {$BASIC_AUTH_PASSWORD_HASH}
         }
-        uri strip_prefix /loki
         reverse_proxy loki:3100 {
             transport http {
                 read_timeout 60s
